@@ -41,7 +41,7 @@ A modern, fast, and feature-rich Neovim configuration based on [LazyVim](https:/
 
 2. **Clone this repository:**
    ```bash
-   git clone <repository-url> ~/.config/nvim
+   git clone  https://github.com/AtulPahal/LazyVim.git ~/.config/nvim
    ```
 
 3. **Setup Environment Variables:**
