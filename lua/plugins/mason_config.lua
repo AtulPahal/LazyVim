@@ -1,7 +1,7 @@
 return {
   -- 1. Disable Mason's auto-installation feature
   {
-    "williamboman/mason.nvim",
+    "mason-org/mason.nvim",
     opts = function(_, opts)
       -- Clear the ensure_installed list so nothing is added automatically
       opts.ensure_installed = {}
@@ -10,7 +10,7 @@ return {
 
   -- 2. Disable mason-lspconfig's automatic installation
   {
-    "williamboman/mason-lspconfig.nvim",
+    "mason-org/mason-lspconfig.nvim",
     opts = {
       automatic_installation = false,
     },

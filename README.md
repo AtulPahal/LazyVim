@@ -11,7 +11,7 @@ A modern, fast, and feature-rich Neovim configuration based on [LazyVim](https:/
 - **Interactive REPL:** [iron.nvim](https://github.com/Vigemere/iron.nvim) for a powerful interactive development workflow.
 - **Environment Management:** Custom `.env` loader and [dotenv.nvim](https://github.com/ellisonleao/dotenv.nvim) support.
 - **Auto-save:** Never lose work with integrated autosave functionality.
-- **Package Management:** [Mason.nvim](https://github.com/williamboman/mason.nvim) for easy installation of LSP servers, DAP adapters, linters, and formatters.
+- **Package Management:** [Mason.nvim](https://github.com/mason-org/mason.nvim) for easy installation of LSP servers, DAP adapters, linters, and formatters.
 
 ## 📁 Project Structure
 
