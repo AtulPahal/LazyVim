@@ -51,7 +51,21 @@ A modern, fast, and feature-rich Neovim configuration based on [LazyVim](https:/
    ```
    Example `.env` content:
    ```env
-   NVIDIA_API_KEY=your_key_here
+   # AI Provider Configuration
+   
+   # Format: provider_type/model/name
+   # Valid providers: "nvidia_nim" | "open_router" | "deepseek" | "lmstudio" | "llamacpp" | "ollama"
+   MODEL="open_router/anthropic/claude-3.5-sonnet"
+   
+   # API Keys (fill in the ones you use)
+   OPENROUTER_API_KEY="your_openrouter_api_key_here"
+   NVIDIA_NIM_API_KEY=""
+   DEEPSEEK_API_KEY=""
+   
+   # Local Provider URLs (defaults are usually fine)
+   LM_STUDIO_BASE_URL="http://localhost:1234/v1"
+   LLAMACPP_BASE_URL="http://localhost:8080/v1"
+   OLLAMA_BASE_URL="http://localhost:11434"
    ```
 
 4. **Launch Neovim:**
@@ -66,7 +80,10 @@ A modern, fast, and feature-rich Neovim configuration based on [LazyVim](https:/
 This configuration includes a custom loader in `lua/config/options.lua` that automatically reads and sets environment variables from `~/.config/nvim/.env` at startup. This is particularly useful for AI providers like Avante.
 
 ### AI Provider (Avante)
-The AI assistant is configured to use the **Stepfun Flash** model via NVIDIA's API for low-latency, deterministic responses. You can customize the provider in `lua/plugins/avante.lua`.
+The AI assistant natively supports dynamic provider routing. You can change your active provider and model dynamically using the `MODEL` environment variable in your `~/.config/nvim/.env` file. Supported providers include OpenRouter, NVIDIA NIM, DeepSeek, Ollama, LM Studio, and Llama.cpp.
+
+Example:
+`MODEL="open_router/anthropic/claude-3.5-sonnet"` or `MODEL="nvidia_nim/meta/llama3-70b-instruct"`
 
 ## ⌨️ Keymaps
 
@@ -74,3 +91,4 @@ This config inherits all [LazyVim default keymaps](https://www.lazyvim.org/keyma
 
 ---
 *Built with ❤️ and Neovim.*
+ith ❤️ and Neovim.*
