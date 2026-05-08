@@ -3,62 +3,87 @@ return {
   event = "VeryLazy",
   version = false,
   config = function(_, opts)
-    -- Parse MODEL environment variable
+    -- Parse MODEL environment variable (format: provider/model)
     local model_env = os.getenv("MODEL") or "open_router/anthropic/claude-3.5-sonnet"
-    local provider_type, model_name = model_env:match("([^/]+)/(.*)")
-    
-    if not provider_type or not model_name then
-      provider_type = "open_router"
+    local provider_key, model_name = model_env:match("([^/]+)/(.*)")
+
+    if not provider_key or not model_name then
+      -- Fallback or handle cases where only model is provided (e.g. for default provider)
+      provider_key = model_env:match("^opencode$") or "open_router"
       model_name = model_env
     end
 
-    opts.provider = provider_type
+    -- Map friendly names to avante provider keys
+    local provider_map = {
+      claude = "anthropic",
+      gemini = "google",
+      opencode = "opencode",
+    }
+
+    local avante_provider = provider_map[provider_key] or provider_key
+    opts.provider = avante_provider
 
     opts.providers = {
+      openai = {
+        model = provider_key == "openai" and model_name or "gpt-4o",
+      },
+      anthropic = {
+        model = (provider_key == "claude" or provider_key == "anthropic") and model_name or "claude-3-5-sonnet-20240620",
+      },
+      google = {
+        model = (provider_key == "gemini" or provider_key == "google") and model_name or "gemini-1.5-pro-latest",
+      },
       open_router = {
         __inherited_from = "openai",
         endpoint = "https://openrouter.ai/api/v1",
-        model = provider_type == "open_router" and model_name or "anthropic/claude-3.5-sonnet",
+        model = provider_key == "open_router" and model_name or "anthropic/claude-3.5-sonnet",
         api_key_name = "OPENROUTER_API_KEY",
       },
       nvidia_nim = {
         __inherited_from = "openai",
         endpoint = "https://integrate.api.nvidia.com/v1",
-        model = provider_type == "nvidia_nim" and model_name or "meta/llama3-70b-instruct",
+        model = provider_key == "nvidia_nim" and model_name or "meta/llama3-70b-instruct",
         api_key_name = "NVIDIA_NIM_API_KEY",
       },
       deepseek = {
         __inherited_from = "openai",
         endpoint = "https://api.deepseek.com/v1",
-        model = provider_type == "deepseek" and model_name or "deepseek-coder",
+        model = provider_key == "deepseek" and model_name or "deepseek-coder",
         api_key_name = "DEEPSEEK_API_KEY",
       },
       lmstudio = {
         __inherited_from = "openai",
         endpoint = os.getenv("LM_STUDIO_BASE_URL") or "http://localhost:1234/v1",
-        model = provider_type == "lmstudio" and model_name or "local-model",
-        api_key_name = "OPENROUTER_API_KEY", -- dummy since openai provider might require it
+        model = provider_key == "lmstudio" and model_name or "local-model",
+        api_key_name = "DUMMY_KEY",
       },
       llamacpp = {
         __inherited_from = "openai",
         endpoint = os.getenv("LLAMACPP_BASE_URL") or "http://localhost:8080/v1",
-        model = provider_type == "llamacpp" and model_name or "local-model",
-        api_key_name = "OPENROUTER_API_KEY", -- dummy
+        model = provider_key == "llamacpp" and model_name or "local-model",
+        api_key_name = "DUMMY_KEY",
       },
       ollama = {
         __inherited_from = "openai",
         endpoint = (os.getenv("OLLAMA_BASE_URL") or "http://localhost:11434") .. "/v1",
-        model = provider_type == "ollama" and model_name or "llama3",
-        api_key_name = "OPENROUTER_API_KEY", -- dummy
-      }
+        model = provider_key == "ollama" and model_name or "llama3",
+        api_key_name = "DUMMY_KEY",
+      },
+    }
+
+    -- Support for OpenCode via ACP
+    opts.acp_providers = {
+      ["opencode"] = {
+        command = "hermes",
+        args = { "acp" },
+      },
     }
 
     require("avante").setup(opts)
   end,
   opts = {
-    -- Performance-focused behaviour
     behaviour = {
-      auto_suggestions = false, -- Disable if you only want manual trigger (huge speed boost)
+      auto_suggestions = false,
       auto_set_highlight_group = true,
       auto_apply_diff_after_generation = false,
     },
@@ -70,11 +95,9 @@ return {
     "MunifTanjim/nui.nvim",
     "nvim-tree/nvim-web-devicons",
     {
-      -- support for image pasting
       "HakonHarnes/img-clip.nvim",
       event = "VeryLazy",
       opts = {
-        -- recommended settings
         default = {
           embed_image_as_base64 = false,
           prompt_for_file_name = false,
