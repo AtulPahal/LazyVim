@@ -74,8 +74,11 @@ return {
     -- Support for OpenCode via ACP
     opts.acp_providers = {
       ["opencode"] = {
-        command = "hermes",
-        args = { "acp" },
+        command = "gemini",
+        args = { "--acp" },
+        env = {
+          NODE_NO_WARNINGS = "1",
+        },
       },
     }
 
